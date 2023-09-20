@@ -2,8 +2,9 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
+	"log"
 	"log/slog"
-	"net"
 	"os"
 
 	"capnproto.org/go/capnp/v3"
@@ -12,7 +13,16 @@ import (
 )
 
 func main() {
-	listener, err := net.Listen("tcp", "localhost:"+os.Getenv("PORT"))
+	cert, err := tls.LoadX509KeyPair("localhost.pem", "localhost-key.pem")
+	if err != nil {
+		log.Fatalf("Failed to load X509 key pair: %v", err)
+	}
+
+	config := &tls.Config{
+		Certificates: []tls.Certificate{cert},
+	}
+
+	listener, err := tls.Listen("tcp", "localhost:"+os.Getenv("PORT"), config)
 	if err != nil {
 		slog.Error(err.Error())
 		os.Exit(1)

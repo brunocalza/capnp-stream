@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	"io"
-	"net"
 	"os"
 
 	"capnproto.org/go/capnp/v3/flowcontrol"
@@ -16,7 +16,7 @@ import (
 func main() {
 	ctx := context.Background()
 
-	conn, err := net.Dial("tcp", "localhost:8080")
+	conn, err := tls.Dial("tcp", "localhost:8080", nil)
 	if err != nil {
 		panic(err)
 	}
